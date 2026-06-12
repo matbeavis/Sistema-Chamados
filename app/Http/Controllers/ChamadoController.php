@@ -75,4 +75,10 @@ class ChamadoController extends Controller
 
         return redirect()->route('chamados.index');
     }
+    public function destroy(Chamado $chamado)
+    {
+        $chamado->delete();
+
+        return redirect()->route('chamados.index');
+    }
 }
