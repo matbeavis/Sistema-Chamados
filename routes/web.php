@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/chamados/metricas', [ChamadoController::class, 'metricas'])->name('chamados.metricas');
     Route::resource('chamados', ChamadoController::class);
+    Route::patch('/chamados/{chamado}/avancar', [\App\Http\Controllers\ChamadoController::class, 'avancar'])->name('chamados.avancar');
 });
 
 require __DIR__.'/auth.php';

@@ -173,4 +173,16 @@ public function store(Request $request)
             ]
         ]);
     }
+    public function avancar(\App\Models\Chamado $chamado)
+    {
+        $fluxo = ['aberto', 'em andamento', 'resolvido', 'fechado'];
+        $posicaoAtual = array_search($chamado->status, $fluxo);
+
+        if ($posicaoAtual !== false && $posicaoAtual < 3) {
+            $novoStatus = $fluxo[$posicaoAtual + 1];
+            $chamado->update(['status' => $novoStatus]);
+        }
+
+        return back();
+    }
 }

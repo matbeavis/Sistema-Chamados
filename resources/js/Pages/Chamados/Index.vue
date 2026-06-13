@@ -38,6 +38,11 @@ const formatarData = (dataString) => {
         minute: '2-digit'
     }).format(data);
 };
+
+const avancarStatus = (chamadoId) => {
+    router.patch(route('chamados.avancar', chamadoId));
+};
+
 </script>
 
 <template>
@@ -81,7 +86,7 @@ const formatarData = (dataString) => {
                                     class="mt-2 text-[11px] text-gray-600 bg-gray-100 p-1.5 rounded border border-gray-200">
                                     <span class="font-bold text-gray-700">Solicitante</span> {{ chamado.nome_solicitante
                                     }} ({{
-                                    chamado.matricula_solicitante }})
+                                        chamado.matricula_solicitante }})
                                 </div>
                                 <div class="flex justify-between items-center text-xs mt-3">
                                     <span
@@ -113,10 +118,22 @@ const formatarData = (dataString) => {
                                     ESCALONADO POR ATRASO
                                 </div>
 
-                                <div
-                                    class="mt-4 pt-3 border-t border-gray-100 flex flex-col gap-1 text-[11px] text-gray-500">
-                                    <div>Abertura {{ formatarData(chamado.created_at) }}</div>
-                                    <div>Última alteração {{ formatarData(chamado.updated_at) }}</div>
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-end">
+                                    <div class="flex flex-col gap-1 text-[11px] text-gray-500">
+                                        <div>Abertura {{ formatarData(chamado.created_at) }}</div>
+                                        <div>Última alteração {{ formatarData(chamado.updated_at) }}</div>
+                                    </div>
+
+                                    <button v-if="chamado.status !== 'fechado'"
+                                        @click.prevent="avancarStatus(chamado.id)"
+                                        class="text-gray-400 hover:text-indigo-600 transition p-1.5 bg-gray-50 hover:bg-indigo-50 rounded-full border border-gray-200 hover:border-indigo-200"
+                                        title="Avançar para a próxima etapa">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </Link>
                         </div>
