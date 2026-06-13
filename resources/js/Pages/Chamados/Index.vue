@@ -6,6 +6,16 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref } from 'vue';
 
+const executarExportacao = () => {
+    fecharModalExportacao();
+
+    window.location.href = route('chamados.exportar.limpar');
+
+    setTimeout(() => {
+        router.reload();
+    }, 1000);
+};
+
 const modalExportacaoAberto = ref(false);
 
 const abrirModalExportacao = () => {
@@ -183,10 +193,10 @@ const avancarStatus = (chamadoId) => {
                         Cancelar
                     </SecondaryButton>
 
-                    <a :href="route('chamados.exportar.limpar')" @click="fecharModalExportacao"
+                    <button @click="executarExportacao"
                         class="ms-3 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none transition ease-in-out duration-150 shadow">
                         Exportar e Apagar
-                    </a>
+                    </button>
                 </div>
             </div>
         </Modal>
