@@ -6,25 +6,29 @@ Sistema criado como parte do teste da empresa **Codificar**.
 
 ## **Sobre o Projeto**
 
-Este projeto é um sistema para organização de demandas (chamados) desenvolvido em Laravel. Ele inclui funcionalidades como:
+Este projeto é um sistema para organização de demandas administrativas desenvolvido em Laravel. As funcionalidades consolidadas incluem as seguintes entregas técnicas.
 
-- Autenticação de usuários e proteção de rotas integradas
-- Quadro Kanban para organização visual das demandas administrativas
-- Criação de chamados com classificação de prioridade e identificação de setor
-- Distribuição automática de tarefas para o atendente com menor volume de trabalho acumulado
-- Atualização de status e edição de informações dos pedidos em andamento
-- Exclusão de registros protegida por tela de confirmação flutuante
-- Design padronizado em tema escuro para redução de cansaço visual
-- Navegação estruturada no cabeçalho para acesso direto ao quadro geral
+* Autenticação de usuários e proteção de rotas integradas
+* Painel pessoal de Dashboard com estatísticas individuais e atalhos rápidos
+* Quadro Kanban para organização visual com limites de WIP (Work In Progress) e contadores visuais
+* Tela dedicada de métricas ágeis contendo Lead Time, Cycle Time, Throughput e Distribuição de Fluxo
+* Criação de chamados com classificação de prioridade e identificação de setor
+* Distribuição automática de tarefas para o atendente com menor volume de trabalho acumulado
+* Atualização de status e edição de informações dos pedidos em andamento
+* Exibição de datas de abertura e última modificação diretamente nos cartões
+* Escalonamento automático de prioridade por tempo de atraso com sinalização visual de alerta
+* Exclusão de registros protegida por tela de confirmação flutuante
+* Design padronizado em tema escuro para redução de cansaço visual
+* Navegação estruturada no cabeçalho para acesso direto ao quadro e aos indicadores
 
 ## **Requisitos**
 
-Certifique-se de ter os seguintes itens instalados no seu sistema:
+Garanta a instalação dos seguintes componentes no seu ambiente local.
 
-- **PHP** >= 8.0 ([Download PHP](https://www.php.net/))
-- **Composer** ([Download Composer](https://getcomposer.org/))
-- **Node.js** ([Download Node.js](https://nodejs.org/pt))
-- **MySQL** (ou outro banco de dados compatível)
+* **PHP** >= 8.2 ([Download PHP](https://www.php.net/))
+* **Composer** ([Download Composer](https://getcomposer.org/))
+* **Node.js** ([Download Node.js](https://nodejs.org/pt))
+* **SQLite** (padrão da aplicação)
 
 ---
 
@@ -39,7 +43,7 @@ Siga os passos abaixo para configurar e executar o projeto localmente.
 No terminal, execute:
 
 ```bash
-git clone https://github.com/matbeavis/sistema-chamados.git
+git clone [https://github.com/matbeavis/sistema-chamados.git](https://github.com/matbeavis/sistema-chamados.git)
 cd sistema-chamados
 ```
 
@@ -119,6 +123,13 @@ No terminal, execute:
 
 ```bash
 php artisan serve
+```
+### **Passo 9: Iniciar o Agendador de Tarefas (Cron)**
+
+O sistema de escalonamento automático de prioridades por atraso exige a execução contínua do verificador de rotinas. Abra um terceiro terminal na pasta do projeto e mantenha o comando abaixo operando de forma ininterrupta.
+
+```bash
+php artisan schedule:work
 ```
 
 A aplicação estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
