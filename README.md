@@ -6,20 +6,14 @@ Sistema criado como parte do teste da empresa **Codificar**.
 
 ## **Sobre o Projeto**
 
-Este projeto é um sistema para organização de demandas administrativas desenvolvido em Laravel. As funcionalidades consolidadas incluem as seguintes entregas técnicas.
+Este projeto é um sistema para organização de demandas (chamados) desenvolvido em Laravel. As funcionalidades consolidadas incluem as seguintes entregas técnicas.
 
-* Autenticação de usuários e proteção de rotas integradas
-* Painel pessoal de Dashboard com estatísticas individuais e atalhos rápidos
-* Quadro Kanban para organização visual com limites de WIP (Work In Progress) e contadores visuais
-* Tela dedicada de métricas ágeis contendo Lead Time, Cycle Time, Throughput e Distribuição de Fluxo
-* Criação de chamados com classificação de prioridade e identificação de setor
-* Distribuição automática de tarefas para o atendente com menor volume de trabalho acumulado
-* Atualização de status e edição de informações dos pedidos em andamento
-* Exibição de datas de abertura e última modificação diretamente nos cartões
-* Escalonamento automático de prioridade por tempo de atraso com sinalização visual de alerta
-* Exclusão de registros protegida por tela de confirmação flutuante
-* Design padronizado em tema escuro para redução de cansaço visual
-* Navegação estruturada no cabeçalho para acesso direto ao quadro e aos indicadores
+* **Acesso e Segurança** Portal público para abertura de chamados sem cadastro e ambiente restrito para a equipe técnica com navegação protegida.
+* **Gestão Visual Kanban** Quadro interativo com limites de WIP, exibição de datas, dados do solicitante e painel de Dashboard pessoal.
+* **Automação de Fluxo** Distribuição inteligente de tarefas e bloqueio ativo de sobrecarga utilizando um sistema de pesos.
+* **Controle de Prazos** Escalonamento automático de prioridades com alertas visuais baseados no tempo de atraso dos chamados.
+* **Métricas Ágeis** Tela dedicada para monitoramento avançado de desempenho com Lead Time, Cycle Time, Throughput e estatísticas individuais.
+* **Ciclo de Vida Seguro** Gerenciamento completo de edições, atualizações de status e bloqueio de exclusões acidentais mediante confirmação flutuante.
 
 ## **Requisitos**
 
@@ -132,7 +126,8 @@ O sistema de escalonamento automático de prioridades por atraso exige a execuç
 php artisan schedule:work
 ```
 
-A aplicação estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
+A aplicação administrativa estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
+O portal público de criação de chamados pode ser acessado em http://127.0.0.1:8000/abrir-chamado.
 
 ## **Suporte**
 

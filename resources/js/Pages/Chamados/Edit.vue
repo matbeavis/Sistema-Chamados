@@ -93,16 +93,18 @@ const excluirChamado = () => {
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-    <div>
-        <InputLabel for="nome_solicitante" value="Nome do Solicitante" class="text-gray-300" />
-        <TextInput id="nome_solicitante" v-model="form.nome_solicitante" type="text" class="mt-1 block w-full bg-gray-900 border-gray-700 text-gray-300 shadow-sm" />
-    </div>
+                            <div>
+                                <InputLabel for="nome_solicitante" value="Nome do Solicitante" class="text-gray-300" />
+                                <TextInput id="nome_solicitante" v-model="form.nome_solicitante" type="text"
+                                    class="mt-1 block w-full bg-gray-900 border-gray-700 text-gray-300 shadow-sm" />
+                            </div>
 
-    <div>
-        <InputLabel for="matricula_solicitante" value="Matrícula" class="text-gray-300" />
-        <TextInput id="matricula_solicitante" v-model="form.matricula_solicitante" type="text" class="mt-1 block w-full bg-gray-900 border-gray-700 text-gray-300 shadow-sm" />
-    </div>
-</div>
+                            <div>
+                                <InputLabel for="matricula_solicitante" value="Matrícula" class="text-gray-300" />
+                                <TextInput id="matricula_solicitante" v-model="form.matricula_solicitante" type="text"
+                                    class="mt-1 block w-full bg-gray-900 border-gray-700 text-gray-300 shadow-sm" />
+                            </div>
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <InputLabel for="setor" value="Setor" class="text-gray-300" />
