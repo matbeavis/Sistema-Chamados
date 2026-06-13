@@ -2,6 +2,19 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { router } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { ref } from 'vue';
+
+const modalExportacaoAberto = ref(false);
+
+const abrirModalExportacao = () => {
+    modalExportacaoAberto.value = true;
+};
+
+const fecharModalExportacao = () => {
+    modalExportacaoAberto.value = false;
+};
 
 const props = defineProps({
     chamados: Array,
@@ -52,10 +65,12 @@ const avancarStatus = (chamadoId) => {
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Quadro de Chamados</h2>
                 <div class="flex gap-4">
-                    <a :href="route('chamados.exportar.limpar')"
+
+                    <button @click="abrirModalExportacao"
                         class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm flex items-center shadow transition">
-                        Gerar Relatório Fechados
-                    </a>
+                        Gerar relatório e Limpar Fechados
+                    </button>
+
                     <Link :href="route('chamados.create')"
                         class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm flex items-center shadow transition">
                         Novo Chamado
@@ -95,8 +110,8 @@ const avancarStatus = (chamadoId) => {
                                     <div v-if="chamado.nome_solicitante"
                                         class="mt-2 text-[11px] text-gray-600 bg-gray-100 p-1.5 rounded border border-gray-200">
                                         <span class="font-bold text-gray-700">Solicitante</span> {{
-                                        chamado.nome_solicitante }} ({{
-                                        chamado.matricula_solicitante }})
+                                            chamado.nome_solicitante }} ({{
+                                            chamado.matricula_solicitante }})
                                     </div>
 
                                     <div class="flex justify-between items-center text-xs mt-3">
@@ -152,5 +167,28 @@ const avancarStatus = (chamadoId) => {
                 </div>
             </div>
         </div>
+        <Modal :show="modalExportacaoAberto" @close="fecharModalExportacao">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Confirmar Exportação e Limpeza
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    Esta ação vai gerar um arquivo CSV contendo o histórico de todos os chamados fechados e os apagará
+                    permanentemente do banco de dados na mesma requisição. Deseja prosseguir com a limpeza do sistema?
+                </p>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="fecharModalExportacao">
+                        Cancelar
+                    </SecondaryButton>
+
+                    <a :href="route('chamados.exportar.limpar')" @click="fecharModalExportacao"
+                        class="ms-3 inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none transition ease-in-out duration-150 shadow">
+                        Exportar e Apagar
+                    </a>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
