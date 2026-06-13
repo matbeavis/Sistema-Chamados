@@ -1,31 +1,128 @@
-# Sistema de Controle de Chamados Internos
+# **Sistema de Controle de Chamados Internos**
 
-Plataforma desenvolvida para centralizar, organizar e distribuir os pedidos de suporte da área administrativa de forma equilibrada.
+Sistema criado como parte do teste da empresa **Codificar**.
 
-## Tecnologias Utilizadas
-* Laravel (Backend)
-* Vue.js com Composition API (Frontend)
-* Inertia.js (Comunicação)
-* Tailwind CSS (Estilização)
-* SQLite (Banco de Dados)
+---
 
-## Justificativas Arquiteturais
-A integração do Vue.js pelo pacote Inertia.js elimina a necessidade de construir e manter uma API REST separada. O servidor entrega os dados diretamente para as páginas visuais e reduz a complexidade do código. A escolha da interface no formato Kanban atende à necessidade de acompanhar os chamados com total clareza. As colunas visuais traduzem o status de cada pedido e aplicam os conceitos de metodologias ágeis de forma orgânica no dia a dia do setor. A regra de distribuição automática foi processada diretamente na inserção do banco de dados para garantir que a equipe mantenha um fluxo de trabalho sempre equilibrado.
+## **Sobre o Projeto**
 
-## Instruções de Instalação e Execução
+Este projeto é um sistema para organização de demandas (chamados) desenvolvido em Laravel. Ele inclui funcionalidades como:
 
-O ambiente local exige as instalações prévias do PHP, do Composer e do Node.js.
+- Autenticação de usuários e proteção de rotas integradas
+- Quadro Kanban para organização visual das demandas administrativas
+- Criação de chamados com classificação de prioridade e identificação de setor
+- Distribuição automática de tarefas para o atendente com menor volume de trabalho acumulado
+- Atualização de status e edição de informações dos pedidos em andamento
+- Exclusão de registros protegida por tela de confirmação flutuante
+- Design padronizado em tema escuro para redução de cansaço visual
+- Navegação estruturada no cabeçalho para acesso direto ao quadro geral
 
-1. Realize o clone do repositório para o seu ambiente local.
-2. Abra o terminal na pasta raiz do projeto.
-3. Execute `composer install` para baixar as dependências do servidor.
-4. Execute `npm install` para baixar as dependências da interface.
-5. Crie uma cópia do arquivo `.env.example` com o nome `.env`.
-6. Execute `php artisan key:generate` para estabelecer a chave de segurança.
-7. Altere a configuração de banco de dados no arquivo `.env` para `DB_CONNECTION=sqlite` e remova as outras linhas de DB.
-8. Crie um arquivo em branco chamado `database.sqlite` dentro da pasta `database`.
-9. Execute `php artisan migrate:fresh --seed` para construir as tabelas e popular os três usuários de suporte iniciais.
-10. Inicie o servidor do backend executando `php artisan serve`.
-11. Abra um segundo terminal e execute `npm run dev` para compilar a interface.
-12. Acesse `http://localhost:8000` no navegador.
-13. Utilize as credenciais `suporte1@empresa.com` com a senha `senha123` para acessar o sistema.
+## **Requisitos**
+
+Certifique-se de ter os seguintes itens instalados no seu sistema:
+
+- **PHP** >= 8.0 ([Download PHP](https://www.php.net/))
+- **Composer** ([Download Composer](https://getcomposer.org/))
+- **Node.js** ([Download Node.js](https://nodejs.org/pt))
+- **MySQL** (ou outro banco de dados compatível)
+
+---
+
+## **Instalação**
+
+Siga os passos abaixo para configurar e executar o projeto localmente.
+
+---
+
+### **Passo 1: Clonar o Repositório**
+
+No terminal, execute:
+
+```bash
+git clone https://github.com/matbeavis/sistema-chamados.git
+cd sistema-chamados
+```
+
+---
+
+### **Passo 2: Instalar Dependências do PHP**
+
+No diretório do projeto, instale as dependências do Laravel:
+
+```bash
+composer install
+```
+
+> ⚠️ **Nota**: Se ocorrer um erro relacionado ao `zip`, ative a extensão `zip` no arquivo de configuração do PHP (`php.ini`).
+
+---
+
+### **Passo 3: Instalar Dependências do Node.js**
+
+Instale as dependências do frontend:
+
+```bash
+npm install
+```
+
+---
+
+### **Passo 4: Configurar o Arquivo `.env`**
+
+Crie uma cópia do arquivo `.env.example` e ajuste as variáveis conforme necessário (banco de dados, chave da aplicação, etc.):
+
+```bash
+copy .env.example .env
+```
+
+---
+
+### **Passo 5: Gerar a Chave da Aplicação**
+
+Gere a chave única da aplicação:
+
+```bash
+php artisan key:generate
+```
+
+---
+
+### **Passo 6: Executar Migrações**
+
+Crie as tabelas no banco de dados e preencha dados iniciais:
+
+```bash
+php artisan migrate --seed
+```
+
+---
+
+### **Passo 7: Compilar os Assets Frontend**
+
+Compile os arquivos CSS/JavaScript para desenvolvimento:
+
+```bash
+npm run dev
+```
+
+Para produção, use:
+
+```bash
+npm run build
+```
+
+---
+
+### **Passo 8: Iniciar o Servidor**
+
+No terminal, execute:
+
+```bash
+php artisan serve
+```
+
+A aplicação estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+## **Suporte**
+
+Se você encontrar problemas entre em contato pelo [GitHub Issues](https://github.com/matbeavis/sistema-chamados/issues).
