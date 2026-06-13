@@ -31,7 +31,7 @@ public function store(Request $request)
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
             'prioridade' => 'required|in:baixa,media,alta',
-            'setor' => 'nullable|string|max:255',
+            'setor' => 'nullable|in:RH,Financeiro,TI,Comercial,Operacoes',
             'responsavel_id' => 'nullable|exists:users,id',
             'nome_solicitante' => 'nullable|string|max:255',
             'matricula_solicitante' => 'nullable|string|max:255',

@@ -19,7 +19,7 @@ class PublicChamadoController extends Controller
         $dados = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
-            'setor' => 'required|string|max:255',
+            'setor' => 'required|in:RH,Financeiro,TI,Comercial,Operacoes',
             'nome_solicitante' => 'required|string|max:255',
             'matricula_solicitante' => 'required|string|max:255',
         ]);

@@ -59,8 +59,16 @@ const submit = () => {
 
                             <div>
                                 <InputLabel for="setor" value="Setor" class="text-gray-300" />
-                                <TextInput id="setor" v-model="form.setor" type="text"
-                                    class="mt-1 block w-full bg-gray-900 border-gray-700 text-gray-300 focus:border-indigo-600 focus:ring-indigo-600 shadow-sm" />
+                                <select id="setor" v-model="form.setor"
+                                    class="mt-1 block w-full bg-gray-900 border-gray-700 text-gray-300 focus:border-indigo-600 focus:ring-indigo-600 rounded-md shadow-sm"
+                                    required>
+                                    <option value="" disabled>Selecione um departamento</option>
+                                    <option value="RH">Recursos Humanos</option>
+                                    <option value="Financeiro">Financeiro</option>
+                                    <option value="TI">Tecnologia da Informação</option>
+                                    <option value="Comercial">Comercial</option>
+                                    <option value="Operacoes">Operações</option>
+                                </select>
                             </div>
                         </div>
 
