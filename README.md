@@ -8,6 +8,8 @@ Sistema criado como parte do teste da empresa **Codificar**.
 
 Este projeto é um sistema para organização de demandas (chamados) desenvolvido em Laravel. As funcionalidades consolidadas incluem as seguintes entregas técnicas.
 
+![Quadro Kanban](./assets/PrintTelaPrincipal.png)
+
 * **Acesso e Segurança** Portal público para abertura de chamados sem cadastro e ambiente restrito para a equipe técnica com navegação protegida.
 * **Gestão Visual Kanban** Quadro interativo com limites de WIP, exibição de datas, dados do solicitante e painel de Dashboard pessoal.
 * **Automação de Fluxo** Distribuição inteligente de tarefas e bloqueio ativo de sobrecarga utilizando um sistema de pesos.
@@ -16,8 +18,6 @@ Este projeto é um sistema para organização de demandas (chamados) desenvolvid
 * **Ciclo de Vida Seguro** Gerenciamento completo de edições, atualizações de status e bloqueio de exclusões acidentais mediante confirmação flutuante.
 * **Limites de WIP Ativos** As colunas iniciais de chamados possuem tetos numéricos para evidenciar gargalos estruturais e impedir a sobrecarga de demandas pendentes com a equipe.
 * **Trava Visual de Fechados** A coluna de conclusão apresenta um limite configurado em 50 cartões com finalidade puramente estética e de usabilidade. Essa numeração serve para indicar o acúmulo visual de elementos finalizados na tela, o que sinaliza o momento ideal para utilizar a rotina de exportação e limpeza em lote.
-
-![Quadro Kanban](./assets/PrintTelaPrincipal.png)
 
 ## **Requisitos**
 
