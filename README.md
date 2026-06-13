@@ -14,6 +14,8 @@ Este projeto é um sistema para organização de demandas (chamados) desenvolvid
 * **Controle de Prazos** Escalonamento automático de prioridades com alertas visuais baseados no tempo de atraso dos chamados.
 * **Métricas Ágeis** Tela dedicada para monitoramento avançado de desempenho com Lead Time, Cycle Time, Throughput e estatísticas individuais.
 * **Ciclo de Vida Seguro** Gerenciamento completo de edições, atualizações de status e bloqueio de exclusões acidentais mediante confirmação flutuante.
+* **Limites de WIP Ativos** As colunas iniciais de chamados possuem tetos numéricos para evidenciar gargalos estruturais e impedir a sobrecarga de demandas pendentes com a equipe.
+* **Trava Visual de Fechados** A coluna de conclusão apresenta um limite configurado em 50 cartões com finalidade puramente estética e de usabilidade. Essa numeração serve para indicar o acúmulo visual de elementos finalizados na tela, o que sinaliza o momento ideal para utilizar a rotina de exportação e limpeza em lote.
 
 ## **Requisitos**
 
