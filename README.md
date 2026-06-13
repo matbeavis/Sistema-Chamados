@@ -17,6 +17,8 @@ Este projeto é um sistema para organização de demandas (chamados) desenvolvid
 * **Limites de WIP Ativos** As colunas iniciais de chamados possuem tetos numéricos para evidenciar gargalos estruturais e impedir a sobrecarga de demandas pendentes com a equipe.
 * **Trava Visual de Fechados** A coluna de conclusão apresenta um limite configurado em 50 cartões com finalidade puramente estética e de usabilidade. Essa numeração serve para indicar o acúmulo visual de elementos finalizados na tela, o que sinaliza o momento ideal para utilizar a rotina de exportação e limpeza em lote.
 
+![Quadro Kanban](./assets/PrintTelaPrincipal.png)
+
 ## **Requisitos**
 
 Garanta a instalação dos seguintes componentes no seu ambiente local.
