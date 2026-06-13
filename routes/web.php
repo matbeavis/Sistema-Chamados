@@ -21,13 +21,16 @@ Route::get('/dashboard', function () {
     $chamadosAtivos = \App\Models\Chamado::where('responsavel_id', $usuario->id)
         ->whereIn('status', ['aberto', 'em andamento'])
         ->orderBy('created_at', 'desc')
-        ->take(5)
         ->get();
 
+    $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
+    $cargaTrabalho = $chamadosAtivos->reduce(function ($total, $chamado) use ($pesos) {
+        return $total + ($pesos[$chamado->prioridade] ?? 0);
+    }, 0);
+
     $estatisticas = [
-        'pendentes' => \App\Models\Chamado::where('responsavel_id', $usuario->id)
-            ->whereIn('status', ['aberto', 'em andamento'])
-            ->count(),
+        'pendentes' => $chamadosAtivos->count(),
+        'cargaTrabalho' => $cargaTrabalho,
         'resolvidosHoje' => \App\Models\Chamado::where('responsavel_id', $usuario->id)
             ->whereIn('status', ['resolvido', 'fechado'])
             ->whereDate('updated_at', \Carbon\Carbon::today())
@@ -35,7 +38,7 @@ Route::get('/dashboard', function () {
     ];
 
     return \Inertia\Inertia::render('Dashboard', [
-        'meusChamados' => $chamadosAtivos,
+        'meusChamados' => $chamadosAtivos->take(5)->values(),
         'estatisticas' => $estatisticas
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');

@@ -25,7 +25,7 @@ class ChamadoController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+public function store(Request $request)
     {
         $dadosAprovados = $request->validate([
             'titulo' => 'required|string|max:255',
@@ -36,14 +36,45 @@ class ChamadoController extends Controller
         ]);
 
         $dadosAprovados['status'] = 'aberto';
+        $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
+        $pesoNovo = $pesos[$dadosAprovados['prioridade']];
 
-        if (empty($dadosAprovados['responsavel_id'])) {
-            $usuarioMenosOcupado = User::withCount(['chamados' => function ($query) {
+        // 1. Verificação de Atribuição Manual
+        if (!empty($dadosAprovados['responsavel_id'])) {
+            $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
+                ->whereIn('status', ['aberto', 'em andamento'])
+                ->get()
+                ->reduce(function ($total, $c) use ($pesos) {
+                    return $total + ($pesos[$c->prioridade] ?? 0);
+                }, 0);
+
+            if (($cargaAtual + $pesoNovo) > 10) {
+                return back()->withErrors([
+                    'responsavel_id' => 'Limite excedido. Este funcionário ultrapassará a carga máxima de 10 pontos com este chamado.'
+                ]);
+            }
+        } 
+        // 2. Verificação de Atribuição Automática
+        else {
+            $usuarios = \App\Models\User::with(['chamados' => function ($query) {
                 $query->whereIn('status', ['aberto', 'em andamento']);
-            }])->orderBy('chamados_count', 'asc')->first();
+            }])->get();
+
+            $usuarioMenosOcupado = $usuarios->sortBy(function ($user) use ($pesos) {
+                return $user->chamados->reduce(function ($total, $chamado) use ($pesos) {
+                    return $total + ($pesos[$chamado->prioridade] ?? 0);
+                }, 0);
+            })->first();
 
             if ($usuarioMenosOcupado) {
-                $dadosAprovados['responsavel_id'] = $usuarioMenosOcupado->id;
+                $cargaMenosOcupado = $usuarioMenosOcupado->chamados->reduce(function ($total, $chamado) use ($pesos) {
+                    return $total + ($pesos[$chamado->prioridade] ?? 0);
+                }, 0);
+
+                // Só atribui se o novo chamado não estourar o limite de 10 pontos
+                if (($cargaMenosOcupado + $pesoNovo) <= 10) {
+                    $dadosAprovados['responsavel_id'] = $usuarioMenosOcupado->id;
+                }
             }
         }
 
@@ -70,6 +101,25 @@ class ChamadoController extends Controller
             'setor' => 'nullable|string|max:255',
             'responsavel_id' => 'nullable|exists:users,id',
         ]);
+
+        if (in_array($dadosAprovados['status'], ['aberto', 'em andamento']) && !empty($dadosAprovados['responsavel_id'])) {
+            $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
+            $pesoNovo = $pesos[$dadosAprovados['prioridade']];
+
+            $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
+                ->whereIn('status', ['aberto', 'em andamento'])
+                ->where('id', '!=', $chamado->id)
+                ->get()
+                ->reduce(function ($total, $c) use ($pesos) {
+                    return $total + ($pesos[$c->prioridade] ?? 0);
+                }, 0);
+
+            if (($cargaAtual + $pesoNovo) > 10) {
+                return back()->withErrors([
+                    'status' => 'Limite de esforço excedido. O funcionário ultrapassará a carga máxima de 10 pontos.'
+                ]);
+            }
+        }
 
         $chamado->update($dadosAprovados);
 

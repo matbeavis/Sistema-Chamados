@@ -6,6 +6,11 @@ defineProps({
     meusChamados: Array,
     estatisticas: Object,
 });
+
+const obterPeso = (prioridade) => {
+    const pesos = { baixa: 1, media: 2, alta: 3 };
+    return pesos[prioridade] || 0;
+};
 </script>
 
 <template>
@@ -19,11 +24,17 @@ defineProps({
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-700">
-                        <div class="text-sm font-medium text-gray-400 uppercase mb-2">Minhas Pendências</div>
+                        <div class="text-sm font-medium text-gray-400 uppercase mb-2">Demandas Pendentes</div>
                         <div class="text-4xl font-bold text-gray-100">{{ estatisticas.pendentes }}</div>
-                        <div class="text-sm text-gray-500 mt-1">Chamados aguardando sua ação</div>
+                        <div class="text-sm text-gray-500 mt-1">Quantidade absoluta de chamados</div>
+                    </div>
+
+                    <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-700">
+                        <div class="text-sm font-medium text-gray-400 uppercase mb-2">Esforço Acumulado</div>
+                        <div class="text-4xl font-bold text-indigo-400">{{ estatisticas.cargaTrabalho }}</div>
+                        <div class="text-sm text-gray-500 mt-1">Soma dos pesos por prioridade</div>
                     </div>
 
                     <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-700">
@@ -47,13 +58,18 @@ defineProps({
                             <Link v-for="chamado in meusChamados" :key="chamado.id" :href="route('chamados.edit', chamado.id)" class="block bg-gray-900 p-4 rounded border border-gray-700 hover:bg-gray-700 transition">
                                 <div class="flex justify-between items-center">
                                     <h3 class="font-bold text-gray-200">{{ chamado.titulo }}</h3>
-                                    <span class="font-bold uppercase text-xs" :class="{
-                                        'text-red-500': chamado.prioridade === 'alta',
-                                        'text-yellow-500': chamado.prioridade === 'media',
-                                        'text-green-500': chamado.prioridade === 'baixa'
-                                    }">
-                                        {{ chamado.prioridade }}
-                                    </span>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xs bg-gray-800 text-gray-400 px-2 py-1 rounded border border-gray-600">
+                                            Peso {{ obterPeso(chamado.prioridade) }}
+                                        </span>
+                                        <span class="font-bold uppercase text-xs" :class="{
+                                            'text-red-500': chamado.prioridade === 'alta',
+                                            'text-yellow-500': chamado.prioridade === 'media',
+                                            'text-green-500': chamado.prioridade === 'baixa'
+                                        }">
+                                            {{ chamado.prioridade }}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="text-sm text-gray-400 mt-2">
                                     Setor {{ chamado.setor || 'Não informado' }}
