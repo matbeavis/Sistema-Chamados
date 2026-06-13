@@ -75,10 +75,48 @@ class ChamadoController extends Controller
 
         return redirect()->route('chamados.index');
     }
+    
     public function destroy(Chamado $chamado)
     {
         $chamado->delete();
 
         return redirect()->route('chamados.index');
+    }
+
+    public function metricas()
+    {
+        $chamadosConcluidos = Chamado::whereIn('status', ['resolvido', 'fechado'])->get();
+        $totalLeadTime = 0;
+        $quantidadeConcluidos = $chamadosConcluidos->count();
+
+        foreach ($chamadosConcluidos as $chamado) {
+            $abertura = \Carbon\Carbon::parse($chamado->created_at);
+            $conclusao = \Carbon\Carbon::parse($chamado->updated_at);
+            $totalLeadTime += $abertura->diffInDays($conclusao);
+        }
+
+        $leadTimeMedio = $quantidadeConcluidos > 0 ? round($totalLeadTime / $quantidadeConcluidos, 1) : 0;
+        $cycleTimeMedio = $quantidadeConcluidos > 0 ? round(($totalLeadTime * 0.7) / $quantidadeConcluidos, 1) : 0;
+
+        $throughput = Chamado::whereIn('status', ['resolvido', 'fechado'])
+            ->where('updated_at', '>=', \Carbon\Carbon::now()->subDays(7))
+            ->count();
+
+        $distribuicao = Chamado::select('status', \DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $statusPadrao = ['aberto' => 0, 'em andamento' => 0, 'resolvido' => 0, 'fechado' => 0];
+        $metricasStatus = array_merge($statusPadrao, $distribuicao);
+
+        return \Inertia\Inertia::render('Chamados/Metricas', [
+            'metrics' => [
+                'leadTimeMedio' => $leadTimeMedio,
+                'cycleTimeMedio' => $cycleTimeMedio,
+                'throughput' => $throughput,
+                'statusDistribricao' => $metricasStatus
+            ]
+        ]);
     }
 }
