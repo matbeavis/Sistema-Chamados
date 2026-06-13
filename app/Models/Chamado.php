@@ -16,6 +16,7 @@ class Chamado extends Model
         'status',
         'responsavel_id',
         'setor',
+        'escalonado',
     ];
     public function responsavel()
     {
