@@ -185,4 +185,36 @@ public function store(Request $request)
 
         return back();
     }
+    public function exportarLimparFechados()
+    {
+        $chamadosFechados = \App\Models\Chamado::where('status', 'fechado')->get();
+
+        if ($chamadosFechados->isEmpty()) {
+            return back();
+        }
+
+        $nomeArquivo = 'relatorio_fechados_' . date('Y_m_d_H_i_s') . '.csv';
+        $caminho = storage_path('app/public/' . $nomeArquivo);
+        $arquivo = fopen($caminho, 'w');
+
+        fputcsv($arquivo, ['ID', 'Titulo', 'Prioridade', 'Setor', 'Solicitante', 'Abertura', 'Fechamento']);
+
+        foreach ($chamadosFechados as $chamado) {
+            fputcsv($arquivo, [
+                $chamado->id,
+                $chamado->titulo,
+                $chamado->prioridade,
+                $chamado->setor,
+                $chamado->nome_solicitante,
+                $chamado->created_at,
+                $chamado->updated_at
+            ]);
+        }
+
+        fclose($arquivo);
+
+        \App\Models\Chamado::where('status', 'fechado')->delete();
+
+        return response()->download($caminho)->deleteFileAfterSend(true);
+    }
 }

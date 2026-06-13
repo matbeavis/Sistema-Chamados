@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/chamados/metricas', [ChamadoController::class, 'metricas'])->name('chamados.metricas');
     Route::resource('chamados', ChamadoController::class);
     Route::patch('/chamados/{chamado}/avancar', [\App\Http\Controllers\ChamadoController::class, 'avancar'])->name('chamados.avancar');
+    Route::get('/chamados-exportar-limpar', [\App\Http\Controllers\ChamadoController::class, 'exportarLimparFechados'])->name('chamados.exportar.limpar');
 });
 
 require __DIR__.'/auth.php';
