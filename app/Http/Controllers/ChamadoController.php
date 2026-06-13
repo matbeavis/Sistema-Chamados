@@ -33,6 +33,8 @@ public function store(Request $request)
             'prioridade' => 'required|in:baixa,media,alta',
             'setor' => 'nullable|string|max:255',
             'responsavel_id' => 'nullable|exists:users,id',
+            'nome_solicitante' => 'nullable|string|max:255',
+            'matricula_solicitante' => 'nullable|string|max:255',
         ]);
 
         $dadosAprovados['status'] = 'aberto';
@@ -100,6 +102,8 @@ public function store(Request $request)
             'status' => 'required|in:aberto,em andamento,resolvido,fechado',
             'setor' => 'nullable|string|max:255',
             'responsavel_id' => 'nullable|exists:users,id',
+            'nome_solicitante' => 'nullable|string|max:255',
+            'matricula_solicitante' => 'nullable|string|max:255',
         ]);
 
         if (in_array($dadosAprovados['status'], ['aberto', 'em andamento']) && !empty($dadosAprovados['responsavel_id'])) {

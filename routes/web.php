@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChamadoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicChamadoController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,6 +15,10 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/abrir-chamado', [PublicChamadoController::class, 'create'])->name('chamado.publico.create');
+Route::post('/abrir-chamado', [PublicChamadoController::class, 'store'])->name('chamado.publico.store');
+Route::get('/chamado-enviado', [PublicChamadoController::class, 'sucesso'])->name('chamado.sucesso');
 
 Route::get('/dashboard', function () {
     $usuario = auth()->user();
