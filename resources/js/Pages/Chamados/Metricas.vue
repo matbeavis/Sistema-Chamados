@@ -20,7 +20,7 @@ const props = defineProps({
                         <div class="text-sm font-medium text-gray-400 uppercase">Lead Time Médio</div>
                         <div class="mt-2 flex items-baseline">
                             <span class="text-3xl font-semibold text-gray-100">{{ metrics.leadTimeMedio }}</span>
-                            <span class="ml-2 text-sm text-gray-400">dias</span>
+                            <span class="ml-2 text-sm text-gray-400">horas</span>
                         </div>
                         <p class="mt-1 text-xs text-gray-500">Tempo total desde a criação até o encerramento do chamado.</p>
                     </div>
@@ -29,7 +29,7 @@ const props = defineProps({
                         <div class="text-sm font-medium text-gray-400 uppercase">Cycle Time Médio</div>
                         <div class="mt-2 flex items-baseline">
                             <span class="text-3xl font-semibold text-gray-100">{{ metrics.cycleTimeMedio }}</span>
-                            <span class="ml-2 text-sm text-gray-400">dias</span>
+                            <span class="ml-2 text-sm text-gray-400">horas</span>
                         </div>
                         <p class="mt-1 text-xs text-gray-500">Tempo médio de atuação em progresso ativo na equipe.</p>
                     </div>

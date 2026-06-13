@@ -41,7 +41,6 @@ public function store(Request $request)
         $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
         $pesoNovo = $pesos[$dadosAprovados['prioridade']];
 
-        // 1. Verificação de Atribuição Manual
         if (!empty($dadosAprovados['responsavel_id'])) {
             $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
                 ->whereIn('status', ['aberto', 'em andamento'])
@@ -56,7 +55,7 @@ public function store(Request $request)
                 ]);
             }
         } 
-        // 2. Verificação de Atribuição Automática
+
         else {
             $usuarios = \App\Models\User::with(['chamados' => function ($query) {
                 $query->whereIn('status', ['aberto', 'em andamento']);
@@ -138,41 +137,42 @@ public function store(Request $request)
     }
 
     public function metricas()
-    {
-        $chamadosConcluidos = Chamado::whereIn('status', ['resolvido', 'fechado'])->get();
-        $totalLeadTime = 0;
-        $quantidadeConcluidos = $chamadosConcluidos->count();
+{
+    $chamadosConcluidos = Chamado::whereIn('status', ['resolvido', 'fechado'])->get();
+    $totalLeadTime = 0;
+    $quantidadeConcluidos = $chamadosConcluidos->count();
 
-        foreach ($chamadosConcluidos as $chamado) {
-            $abertura = \Carbon\Carbon::parse($chamado->created_at);
-            $conclusao = \Carbon\Carbon::parse($chamado->updated_at);
-            $totalLeadTime += $abertura->diffInDays($conclusao);
-        }
-
-        $leadTimeMedio = $quantidadeConcluidos > 0 ? round($totalLeadTime / $quantidadeConcluidos, 1) : 0;
-        $cycleTimeMedio = $quantidadeConcluidos > 0 ? round(($totalLeadTime * 0.7) / $quantidadeConcluidos, 1) : 0;
-
-        $throughput = Chamado::whereIn('status', ['resolvido', 'fechado'])
-            ->where('updated_at', '>=', \Carbon\Carbon::now()->subDays(7))
-            ->count();
-
-        $distribuicao = Chamado::select('status', \DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
-
-        $statusPadrao = ['aberto' => 0, 'em andamento' => 0, 'resolvido' => 0, 'fechado' => 0];
-        $metricasStatus = array_merge($statusPadrao, $distribuicao);
-
-        return \Inertia\Inertia::render('Chamados/Metricas', [
-            'metrics' => [
-                'leadTimeMedio' => $leadTimeMedio,
-                'cycleTimeMedio' => $cycleTimeMedio,
-                'throughput' => $throughput,
-                'statusDistribricao' => $metricasStatus
-            ]
-        ]);
+    foreach ($chamadosConcluidos as $chamado) {
+        $abertura = \Carbon\Carbon::parse($chamado->created_at);
+        $conclusao = \Carbon\Carbon::parse($chamado->updated_at);
+        
+        $totalLeadTime += $abertura->diffInHours($conclusao);
     }
+
+    $leadTimeMedio = $quantidadeConcluidos > 0 ? round($totalLeadTime / $quantidadeConcluidos, 1) : 0;
+    $cycleTimeMedio = $quantidadeConcluidos > 0 ? round(($totalLeadTime * 0.7) / $quantidadeConcluidos, 1) : 0;
+
+    $throughput = Chamado::whereIn('status', ['resolvido', 'fechado'])
+        ->where('updated_at', '>=', \Carbon\Carbon::now()->subDays(7))
+        ->count();
+
+    $distribuicao = Chamado::select('status', \DB::raw('count(*) as total'))
+        ->groupBy('status')
+        ->pluck('total', 'status')
+        ->toArray();
+
+    $statusPadrao = ['aberto' => 0, 'em andamento' => 0, 'resolvido' => 0, 'fechado' => 0];
+    $metricasStatus = array_merge($statusPadrao, $distribuicao);
+
+    return \Inertia\Inertia::render('Chamados/Metricas', [
+        'metrics' => [
+            'leadTimeMedio' => $leadTimeMedio,
+            'cycleTimeMedio' => $cycleTimeMedio,
+            'throughput' => $throughput,
+            'statusDistribricao' => $metricasStatus
+        ]
+    ]);
+}
     public function avancar(\App\Models\Chamado $chamado)
     {
         $fluxo = ['aberto', 'em andamento', 'resolvido', 'fechado'];
