@@ -129,6 +129,7 @@ O sistema de escalonamento automático de prioridades por atraso exige a execuç
 ```bash
 php artisan schedule:work
 ```
+### **Passo 10: Abrir a Aplicação e Fazer Login**
 
 A aplicação administrativa estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
 O portal público de criação de chamados pode ser acessado em http://127.0.0.1:8000/abrir-chamado.
