@@ -133,6 +133,13 @@ php artisan schedule:work
 A aplicação administrativa estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
 O portal público de criação de chamados pode ser acessado em http://127.0.0.1:8000/abrir-chamado.
 
+### **Credenciais de Acesso Disponíveis**
+```bash
+suporte1@empresa.com | senha123;
+suporte2@empresa.com | senha123;
+suporte3@empresa.com | senha123;
+```
+
 ## **Suporte**
 
 Se você encontrar problemas entre em contato pelo [GitHub Issues](https://github.com/matbeavis/sistema-chamados/issues).
