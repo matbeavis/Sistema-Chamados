@@ -23,7 +23,7 @@ Este projeto é um sistema para organização de demandas (chamados) desenvolvid
 
 Garanta a instalação dos seguintes componentes no seu ambiente local.
 
-* **PHP** >= 8.2 ([Download PHP](https://www.php.net/))
+* **PHP** >= 8.5 ([Download PHP](https://www.php.net/))
 * **Composer** ([Download Composer](https://getcomposer.org/))
 * **Node.js** ([Download Node.js](https://nodejs.org/pt))
 * **SQLite** (padrão da aplicação)
@@ -122,6 +122,9 @@ No terminal, execute:
 ```bash
 php artisan serve
 ```
+
+---
+
 ### **Passo 9: Iniciar o Agendador de Tarefas (Cron)**
 
 O sistema de escalonamento automático de prioridades por atraso exige a execução contínua do verificador de rotinas. Abra um terceiro terminal na pasta do projeto e mantenha o comando abaixo operando de forma ininterrupta.
@@ -129,6 +132,9 @@ O sistema de escalonamento automático de prioridades por atraso exige a execuç
 ```bash
 php artisan schedule:work
 ```
+
+---
+
 ### **Passo 10: Abrir a Aplicação e Fazer Login**
 
 A aplicação administrativa estará disponível em [http://127.0.0.1:8000](http://127.0.0.1:8000).
@@ -140,6 +146,8 @@ suporte1@empresa.com | senha123;
 suporte2@empresa.com | senha123;
 suporte3@empresa.com | senha123;
 ```
+
+---
 
 ## **Suporte**
 
