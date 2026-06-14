@@ -41,7 +41,10 @@ Siga os passos abaixo para configurar e executar o projeto localmente.
 No terminal, execute:
 
 ```bash
-git clone [https://github.com/matbeavis/sistema-chamados.git](https://github.com/matbeavis/sistema-chamados.git)
+git clone https://github.com/matbeavis/sistema-chamados.git
+```
+
+```bash
 cd sistema-chamados
 ```
 
@@ -55,7 +58,7 @@ No diretório do projeto, instale as dependências do Laravel:
 composer install
 ```
 
-> ⚠️ **Nota**: Se ocorrer um erro relacionado ao `zip`, ative a extensão `zip` no arquivo de configuração do PHP (`php.ini`).
+>⚠️ Aviso de Ambiente: O funcionamento correto do Laravel e do Composer depende de extensões ativas na configuração local do PHP. Caso ocorram falhas durante a instalação dos pacotes ou na execução do servidor, verifique o seu arquivo php.ini. Confirme a liberação de ferramentas essenciais removendo o ponto e vírgula inicial de opções como zip, fileinfo, mbstring, curl, openssl e do driver do banco de dados correspondente.
 
 ---
 
@@ -107,7 +110,7 @@ Compile os arquivos CSS/JavaScript para desenvolvimento:
 npm run dev
 ```
 
-Para produção, use:
+Ou para produção, use:
 
 ```bash
 npm run build
