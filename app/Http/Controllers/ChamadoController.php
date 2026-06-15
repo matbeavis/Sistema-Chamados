@@ -26,63 +26,74 @@ class ChamadoController extends Controller
     }
 
 public function store(Request $request)
-    {
-        $dadosAprovados = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'prioridade' => 'required|in:baixa,media,alta',
-            'setor' => 'nullable|in:RH,Financeiro,TI,Comercial,Operacoes',
-            'responsavel_id' => 'nullable|exists:users,id',
-            'nome_solicitante' => 'nullable|string|max:255',
-            'matricula_solicitante' => 'nullable|string|max:255',
-        ]);
+{
+    $dadosAprovados = $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descricao' => 'required|string',
+        'prioridade' => 'required|in:baixa,media,alta',
+        'setor' => 'nullable|in:RH,Financeiro,TI,Comercial,Operacoes',
+        'responsavel_id' => 'nullable|exists:users,id',
+        'nome_solicitante' => 'nullable|string|max:255',
+        'matricula_solicitante' => 'nullable|string|max:255',
+    ]);
 
-        $dadosAprovados['status'] = 'aberto';
-        $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
-        $pesoNovo = $pesos[$dadosAprovados['prioridade']];
+    $dadosAprovados['status'] = 'aberto';
+    $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
+    $pesoNovo = $pesos[$dadosAprovados['prioridade']];
 
-        if (!empty($dadosAprovados['responsavel_id'])) {
-            $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
-                ->whereIn('status', ['aberto', 'em andamento'])
-                ->get()
-                ->reduce(function ($total, $c) use ($pesos) {
-                    return $total + ($pesos[$c->prioridade] ?? 0);
-                }, 0);
+    if (!empty($dadosAprovados['responsavel_id'])) {
+        $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
+            ->whereIn('status', ['aberto', 'em andamento'])
+            ->get()
+            ->reduce(function ($total, $c) use ($pesos) {
+                return $total + ($pesos[$c->prioridade] ?? 0);
+            }, 0);
 
-            if (($cargaAtual + $pesoNovo) > 10) {
-                return back()->withErrors([
-                    'responsavel_id' => 'Limite excedido. Este funcionário ultrapassará a carga máxima de 10 pontos com este chamado.'
-                ]);
-            }
-        } 
+        if (($cargaAtual + $pesoNovo) > 10) {
+            return back()->withErrors([
+                'responsavel_id' => 'Limite excedido. Este funcionário ultrapassará a carga máxima de 10 pontos com este chamado.'
+            ]);
+        }
+    } 
+    else {
+        $usuarios = \App\Models\User::with(['chamados' => function ($query) {
+            $query->whereIn('status', ['aberto', 'em andamento']);
+        }])->get();
 
-        else {
-            $usuarios = \App\Models\User::with(['chamados' => function ($query) {
-                $query->whereIn('status', ['aberto', 'em andamento']);
-            }])->get();
+        $usuarioMenosOcupado = $usuarios->sortBy(function ($user) use ($pesos) {
+            return $user->chamados->reduce(function ($total, $chamado) use ($pesos) {
+                return $total + ($pesos[$chamado->prioridade] ?? 0);
+            }, 0);
+        })->first();
 
-            $usuarioMenosOcupado = $usuarios->sortBy(function ($user) use ($pesos) {
-                return $user->chamados->reduce(function ($total, $chamado) use ($pesos) {
-                    return $total + ($pesos[$chamado->prioridade] ?? 0);
-                }, 0);
-            })->first();
+        if ($usuarioMenosOcupado) {
+            $cargaMenosOcupado = $usuarioMenosOcupado->chamados->reduce(function ($total, $chamado) use ($pesos) {
+                return $total + ($pesos[$chamado->prioridade] ?? 0);
+            }, 0);
 
-            if ($usuarioMenosOcupado) {
-                $cargaMenosOcupado = $usuarioMenosOcupado->chamados->reduce(function ($total, $chamado) use ($pesos) {
-                    return $total + ($pesos[$chamado->prioridade] ?? 0);
-                }, 0);
-
-                // Só atribui se o novo chamado não estourar o limite de 10 pontos
-                if (($cargaMenosOcupado + $pesoNovo) <= 10) {
-                    $dadosAprovados['responsavel_id'] = $usuarioMenosOcupado->id;
-                }
+            if (($cargaMenosOcupado + $pesoNovo) <= 10) {
+                $dadosAprovados['responsavel_id'] = $usuarioMenosOcupado->id;
             }
         }
-
-        Chamado::create($dadosAprovados);
-
-        return redirect()->route('chamados.index');
     }
+
+    $limiteAbertos = 10;
+    $totalAbertos = Chamado::where('status', 'aberto')->count();
+
+    if ($totalAbertos >= $limiteAbertos) {
+        $chamadoMaisAntigo = Chamado::where('status', 'aberto')
+            ->orderBy('created_at', 'asc')
+            ->first();
+            
+        if ($chamadoMaisAntigo) {
+            $chamadoMaisAntigo->update(['status' => 'em andamento']);
+        }
+    }
+
+    Chamado::create($dadosAprovados);
+
+    return redirect()->route('chamados.index');
+}
     public function edit(Chamado $chamado)
     {
         $responsaveis = User::all();
@@ -93,41 +104,58 @@ public function store(Request $request)
     }
 
     public function update(Request $request, Chamado $chamado)
-    {
-        $dadosAprovados = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'prioridade' => 'required|in:baixa,media,alta',
-            'status' => 'required|in:aberto,em andamento,resolvido,fechado',
-            'setor' => 'nullable|string|max:255',
-            'responsavel_id' => 'nullable|exists:users,id',
-            'nome_solicitante' => 'nullable|string|max:255',
-            'matricula_solicitante' => 'nullable|string|max:255',
-        ]);
+{
+    $dadosAprovados = $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descricao' => 'required|string',
+        'prioridade' => 'required|in:baixa,media,alta',
+        'status' => 'required|in:aberto,em andamento,resolvido,fechado',
+        'setor' => 'nullable|string|max:255',
+        'responsavel_id' => 'nullable|exists:users,id',
+        'nome_solicitante' => 'nullable|string|max:255',
+        'matricula_solicitante' => 'nullable|string|max:255',
+    ]);
 
-        if (in_array($dadosAprovados['status'], ['aberto', 'em andamento']) && !empty($dadosAprovados['responsavel_id'])) {
-            $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
-            $pesoNovo = $pesos[$dadosAprovados['prioridade']];
+    $novoStatus = $dadosAprovados['status'];
 
-            $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
-                ->whereIn('status', ['aberto', 'em andamento'])
-                ->where('id', '!=', $chamado->id)
-                ->get()
-                ->reduce(function ($total, $c) use ($pesos) {
-                    return $total + ($pesos[$c->prioridade] ?? 0);
-                }, 0);
-
-            if (($cargaAtual + $pesoNovo) > 10) {
-                return back()->withErrors([
-                    'status' => 'Limite de esforço excedido. O funcionário ultrapassará a carga máxima de 10 pontos.'
-                ]);
+    if ($chamado->status !== $novoStatus) {
+        $limites = [
+            'aberto' => 10,
+            'em andamento' => 3
+        ];
+        
+        if (array_key_exists($novoStatus, $limites)) {
+            $totalNaColuna = \App\Models\Chamado::where('status', $novoStatus)->count();
+            
+            if ($totalNaColuna >= $limites[$novoStatus]) {
+                return back()->withErrors(['status' => 'A coluna de destino atingiu a capacidade máxima permitida.']);
             }
         }
-
-        $chamado->update($dadosAprovados);
-
-        return redirect()->route('chamados.index');
     }
+
+    if (in_array($novoStatus, ['aberto', 'em andamento']) && !empty($dadosAprovados['responsavel_id'])) {
+        $pesos = ['baixa' => 1, 'media' => 2, 'alta' => 3];
+        $pesoNovo = $pesos[$dadosAprovados['prioridade']];
+
+        $cargaAtual = \App\Models\Chamado::where('responsavel_id', $dadosAprovados['responsavel_id'])
+            ->whereIn('status', ['aberto', 'em andamento'])
+            ->where('id', '!=', $chamado->id)
+            ->get()
+            ->reduce(function ($total, $c) use ($pesos) {
+                return $total + ($pesos[$c->prioridade] ?? 0);
+            }, 0);
+
+        if (($cargaAtual + $pesoNovo) > 10) {
+            return back()->withErrors([
+                'status' => 'Limite de esforço excedido. O funcionário ultrapassará a carga máxima de 10 pontos.'
+            ]);
+        }
+    }
+
+    $chamado->update($dadosAprovados);
+
+    return redirect()->route('chamados.index');
+}
     
     public function destroy(Chamado $chamado)
     {
@@ -173,18 +201,32 @@ public function store(Request $request)
         ]
     ]);
 }
-    public function avancar(\App\Models\Chamado $chamado)
-    {
-        $fluxo = ['aberto', 'em andamento', 'resolvido', 'fechado'];
-        $posicaoAtual = array_search($chamado->status, $fluxo);
+public function avancar(\App\Models\Chamado $chamado)
+{
+    $fluxo = ['aberto', 'em andamento', 'resolvido', 'fechado'];
+    $posicaoAtual = array_search($chamado->status, $fluxo);
 
-        if ($posicaoAtual !== false && $posicaoAtual < 3) {
-            $novoStatus = $fluxo[$posicaoAtual + 1];
-            $chamado->update(['status' => $novoStatus]);
+    if ($posicaoAtual !== false && $posicaoAtual < 3) {
+        $novoStatus = $fluxo[$posicaoAtual + 1];
+
+        $limites = [
+            'aberto' => 10,
+            'em andamento' => 3
+        ];
+
+        if (array_key_exists($novoStatus, $limites)) {
+            $totalNaColuna = \App\Models\Chamado::where('status', $novoStatus)->count();
+
+            if ($totalNaColuna >= $limites[$novoStatus]) {
+                return back()->withErrors(['status' => 'A coluna de destino atingiu a capacidade máxima permitida.']);
+            }
         }
 
-        return back();
+        $chamado->update(['status' => $novoStatus]);
     }
+
+    return back();
+}
     public function exportarLimparFechados()
     {
         $chamadosFechados = \App\Models\Chamado::where('status', 'fechado')->get();

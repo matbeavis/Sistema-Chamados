@@ -1,10 +1,23 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+
+const page = usePage();
+const alertaFlutuante = ref('');
+
+watch(() => page.props.errors.status, (erroRecebido) => {
+    if (erroRecebido) {
+        alertaFlutuante.value = erroRecebido;
+        
+        setTimeout(() => {
+            alertaFlutuante.value = '';
+            page.props.errors.status = null;
+        }, 3500);
+    }
+});
 
 const executarExportacao = () => {
     fecharModalExportacao();
@@ -200,5 +213,9 @@ const avancarStatus = (chamadoId) => {
                 </div>
             </div>
         </Modal>
+
+        <div v-if="alertaFlutuante" class="fixed bottom-6 right-6 z-50 bg-red-600 text-white px-6 py-4 rounded-lg shadow-xl font-medium transition-all duration-300 ease-in-out">
+            {{ alertaFlutuante }}
+        </div>
     </AuthenticatedLayout>
 </template>
