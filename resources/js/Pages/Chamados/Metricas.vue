@@ -4,6 +4,24 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 const props = defineProps({
     metrics: Object,
 });
+
+const formatarTempo = (tempoDecimal) => {
+    if (!tempoDecimal) return '0h';
+
+    const horasInteiras = Math.floor(tempoDecimal);
+    const minutosDecimais = (tempoDecimal - horasInteiras) * 60;
+    const minutosArredondados = Math.round(minutosDecimais);
+
+    if (horasInteiras === 0) {
+        return `${minutosArredondados}m`;
+    }
+
+    if (minutosArredondados === 0) {
+        return `${horasInteiras}h`;
+    }
+
+    return `${horasInteiras}h ${minutosArredondados}m`;
+};
 </script>
 
 <template>
@@ -15,12 +33,11 @@ const props = defineProps({
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    
+
                     <div class="bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-700">
                         <div class="text-sm font-medium text-gray-400 uppercase">Lead Time Médio</div>
                         <div class="mt-2 flex items-baseline">
-                            <span class="text-3xl font-semibold text-gray-100">{{ metrics.leadTimeMedio }}</span>
-                            <span class="ml-2 text-sm text-gray-400">horas</span>
+                            <span class="text-3xl font-semibold text-gray-100">{{ formatarTempo(metrics.leadTimeMedio) }}</span>
                         </div>
                         <p class="mt-1 text-xs text-gray-500">Tempo total desde a criação até o encerramento do chamado.</p>
                     </div>
@@ -28,8 +45,7 @@ const props = defineProps({
                     <div class="bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-700">
                         <div class="text-sm font-medium text-gray-400 uppercase">Cycle Time Médio</div>
                         <div class="mt-2 flex items-baseline">
-                            <span class="text-3xl font-semibold text-gray-100">{{ metrics.cycleTimeMedio }}</span>
-                            <span class="ml-2 text-sm text-gray-400">horas</span>
+                            <span class="text-3xl font-semibold text-gray-100">{{ formatarTempo(metrics.cycleTimeMedio) }}</span>
                         </div>
                         <p class="mt-1 text-xs text-gray-500">Tempo médio de atuação em progresso ativo na equipe.</p>
                     </div>
@@ -63,7 +79,9 @@ const props = defineProps({
                                 <span class="font-semibold text-gray-200">{{ metrics.statusDistribricao['aberto'] }}</span>
                             </div>
                             <div class="w-full bg-gray-900 rounded-full h-2">
-                                <div class="bg-red-500 h-2 rounded-full" :style="{ width: Math.min(metrics.statusDistribricao['aberto'] * 10, 100) + '%' }"></div>
+                                <div class="bg-red-500 h-2 rounded-full"
+                                    :style="{ width: Math.min(metrics.statusDistribricao['aberto'] * 10, 100) + '%' }">
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -72,7 +90,9 @@ const props = defineProps({
                                 <span class="font-semibold text-gray-200">{{ metrics.statusDistribricao['em andamento'] }}</span>
                             </div>
                             <div class="w-full bg-gray-900 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" :style="{ width: Math.min(metrics.statusDistribricao['em andamento'] * 10, 100) + '%' }"></div>
+                                <div class="bg-blue-500 h-2 rounded-full"
+                                    :style="{ width: Math.min(metrics.statusDistribricao['em andamento'] * 10, 100) + '%' }">
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -81,7 +101,9 @@ const props = defineProps({
                                 <span class="font-semibold text-gray-200">{{ metrics.statusDistribricao['resolvido'] }}</span>
                             </div>
                             <div class="w-full bg-gray-900 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" :style="{ width: Math.min(metrics.statusDistribricao['resolvido'] * 10, 100) + '%' }"></div>
+                                <div class="bg-green-500 h-2 rounded-full"
+                                    :style="{ width: Math.min(metrics.statusDistribricao['resolvido'] * 10, 100) + '%' }">
+                                </div>
                             </div>
                         </div>
                     </div>
