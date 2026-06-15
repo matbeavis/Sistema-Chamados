@@ -152,6 +152,29 @@ suporte3@empresa.com | senha123;
 
 ---
 
+## **Testes Automatizados**
+
+A arquitetura do projeto possui uma suíte de verificações construída com o PHPUnit nativo do Laravel. Essa camada garante a estabilidade das regras de negócio e a proteção das rotas principais contra regressões.
+
+**Execução da Suíte**
+Você pode rodar toda a bateria de validações utilizando o comando abaixo no terminal da aplicação.
+
+```bash
+php artisan test
+```
+### Cobertura de Regras de Negócio
+- O arquivo RegrasChamadoTest avalia as lógicas matemáticas isoladas do sistema.
+- Validação do bloqueio de atribuição para funcionários que ultrapassam a carga máxima de 10 pontos.
+- Confirmação da distribuição automática de novos tickets públicos para a conta com a agenda mais livre da equipe.
+
+### Cobertura de Integração e Rotas
+- O documento RotasChamadoTest simula as requisições HTTP para atestar a comunicação segura com o banco de dados.
+- Verificação do bloqueio no avanço de cartões para colunas com a capacidade WIP esgotada.
+- Validação do deslocamento em cascata criado para empurrar o cartão mais antigo para a etapa seguinte quando a coluna inicial atinge a lotação limite.
+- Avaliação da rota de manutenção para garantir a exclusão em lote focada exclusivamente nas demandas finalizadas.
+
+---
+
 ## **Suporte**
 
 Se você encontrar problemas entre em contato pelo [GitHub Issues](https://github.com/matbeavis/sistema-chamados/issues).
